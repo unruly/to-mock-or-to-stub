@@ -19,7 +19,7 @@ public class Fork {
         this.client = client;
     }
 
-    public List<Fork> forks() throws IOException {
+    public List<Fork> children() throws IOException {
         RepositoryId repoId = new RepositoryId(user, name);
 
         return client.getForks(repoId).stream().map(this::repoToFork).collect(Collectors.toList());

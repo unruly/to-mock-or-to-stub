@@ -20,18 +20,23 @@ public class ForkTest {
     public void shouldReturnAnEmptyListOfForksWhenThereAreNoForks() throws Exception {
         Client stubClient = clientThatReturns(Collections.emptyList());
 
-        assertThat(new Fork("junit-team", "junit", stubClient).forks(), emptyIterable());
+        assertThat(new Fork("junit-team", "junit", stubClient).children(), emptyIterable());
     }
 
     @Test
     public void shouldReturnASingleForkWhenARepositoryHasOneFork() throws Exception {
-        Repository expectedRepository = new Repository()
-                .setForks(0)
-                .setName("some-repo")
-                .setOwner(new User().setLogin("some-user"));
-        Client stubClient = clientThatReturns(asList(expectedRepository));
+        String expectedLogin = "some-user";
+        String expectedName = "some-repo";
+        Client stubClient = clientThatReturns(asList(makeRepository(expectedLogin, expectedName)));
 
-        assertThat(new Fork("junit-team", "junit", stubClient).forks(), contains(new Fork("some-user", "some-repo", stubClient)));
+        assertThat(new Fork("junit-team", "junit", stubClient).children(), contains(new Fork(expectedLogin, expectedName, stubClient)));
+    }
+
+    private Repository makeRepository(String login, String name) {
+        return new Repository()
+                    .setForks(0)
+                    .setName(name)
+                    .setOwner(new User().setLogin(login));
     }
 
     private Client clientThatReturns(List<Repository> result) {
