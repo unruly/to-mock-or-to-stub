@@ -23,5 +23,5 @@ You will have a chance to write some code in pairs and try to practice a constra
  * `java-junit-mockito` - java using mockito as a mocking framework
 
 
- * `js-jasmine-stub` - javascript using stubs
- * `js-jasmine-mocha` - javascript using mocha as a mocking framework
+ * `js-mocha-chai-stub` - javascript using stubs
+ * `js-mocha-chai-sinon` - javascript using sinon as a mocking framework
