@@ -1,0 +1,12 @@
+{
+  "name": "to_mock_or_to_stub",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --recursive -R nyan spec/"
+  },
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "mocha": "^2.2.5"
+  }
+}
