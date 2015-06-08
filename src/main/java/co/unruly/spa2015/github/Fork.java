@@ -4,8 +4,7 @@ import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Fork {
@@ -19,10 +18,19 @@ public class Fork {
         this.client = client;
     }
 
-    public List<Fork> children() throws IOException {
-        RepositoryId repoId = new RepositoryId(user, name);
+    public List<Fork> children(int maxDepth) throws IOException {
+        if (maxDepth <= 0) return Collections.emptyList();
 
-        return client.getForks(repoId).stream().map(this::repoToFork).collect(Collectors.toList());
+        RepositoryId repoId = new RepositoryId(user, name);
+        List<Fork> results = new LinkedList<>();
+
+        List<Fork> myForks = client.getForks(repoId).stream().map(this::repoToFork).collect(Collectors.toList());
+        results.addAll(myForks);
+        for (Fork fork : myForks) {
+            results.addAll(fork.children(maxDepth-1));
+        }
+
+        return results;
     }
 
     private Fork repoToFork(Repository repository) {

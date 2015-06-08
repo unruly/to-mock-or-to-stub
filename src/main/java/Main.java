@@ -10,6 +10,6 @@ public class Main {
 
         Fork guardian = new Fork("guardian", "sbt-jasmine-plugin", client);
 
-        guardian.children().forEach(System.out::println);
+        guardian.children(3).forEach(System.out::println);
     }
 }
