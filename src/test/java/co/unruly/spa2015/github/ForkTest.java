@@ -1,26 +1,23 @@
 package co.unruly.spa2015.github;
 
-import org.eclipse.egit.github.core.IRepositoryIdProvider;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
+import org.hamcrest.Description;
+import org.hamcrest.TypeSafeMatcher;
+import org.junit.Rule;
 import org.junit.Test;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.junit.rules.ExpectedException;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.hamcrest.Matchers.contains;
-import static org.hamcrest.Matchers.emptyIterable;
-import static org.hamcrest.Matchers.hasItem;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
 
 public class ForkTest {
 
-    private Map<String, List<Repository>> repoMap = new HashMap<>();
-    private final Client stubClient = stubClient();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
+
+    private final Stubs.StubClient stubClient = new Stubs.StubClient();
     private final String projectName = "junit";
     private final String parentLogin = "junit-team";
     private final String expectedLogin = "some-user";
@@ -32,7 +29,7 @@ public class ForkTest {
 
     @Test
     public void shouldReturnASingleForkWhenARepositoryHasOneFork() throws Exception {
-        repoMap.put(getRepoId(parentLogin), asList(makeRepository(expectedLogin, projectName)));
+        stubClient.repoMap.put(getRepoId(parentLogin), asList(makeRepository(expectedLogin, projectName)));
 
         assertThat(new Fork(parentLogin, projectName, stubClient).children(1), contains(new Fork(expectedLogin, projectName, stubClient)));
     }
@@ -40,18 +37,39 @@ public class ForkTest {
     @Test
     public void shouldFetchAChildsForks() throws Exception {
         String childLogin = "intermediate-user";
-        repoMap.put(getRepoId(parentLogin), asList(makeRepository(childLogin, projectName)));
-        repoMap.put(getRepoId(childLogin), asList(makeRepository(expectedLogin, projectName)));
+        stubClient.repoMap.put(getRepoId(parentLogin), asList(makeRepository(childLogin, projectName)));
+        stubClient.repoMap.put(getRepoId(childLogin), asList(makeRepository(expectedLogin, projectName)));
 
         assertThat(new Fork(parentLogin, projectName, stubClient).children(2), hasItem(new Fork(expectedLogin, projectName, stubClient)));
     }
 
     @Test
     public void shouldStopWhenItReachesMaxDepth() throws Exception {
-        repoMap.put(getRepoId(parentLogin), asList(makeRepository(parentLogin, projectName)));
+        stubClient.repoMap.put(getRepoId(parentLogin), asList(makeRepository(parentLogin, projectName)));
 
 
         assertThat(new Fork(parentLogin, projectName, stubClient).children(1), contains(new Fork(parentLogin, projectName, stubClient)));
+    }
+
+    @Test
+    public void shouldThrowAnInvalidForkExceptionWhenThereIsAProblemWithTheRepo() throws Exception {
+        Client brokenClient = new Stubs.BrokenClient();
+        Fork fork = new Fork(parentLogin, projectName, brokenClient);
+
+        thrown.expect(new TypeSafeMatcher<InvalidForkException>() {
+            @Override
+            protected boolean matchesSafely(InvalidForkException item) {
+                return fork.equals(item.badFork);
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("an InvalidForkException with a bad fork equal to")
+                        .appendValue(fork);
+            }
+        });
+
+        fork.children(1);
     }
 
     private String getRepoId(String login) {
@@ -64,13 +82,4 @@ public class ForkTest {
                     .setOwner(new User().setLogin(login));
     }
 
-    private Client stubClient() {
-        return new Client() {
-            @Override
-            public List<Repository> getForks(IRepositoryIdProvider repo) throws IOException {
-                return repoMap.getOrDefault(repo.generateId(), emptyList());
-            }
-
-        };
-    }
 }

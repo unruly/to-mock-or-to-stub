@@ -18,19 +18,23 @@ public class Fork {
         this.client = client;
     }
 
-    public List<Fork> children(int maxDepth) throws IOException {
+    public List<Fork> children(int maxDepth) throws InvalidForkException {
         if (maxDepth <= 0) return Collections.emptyList();
 
         RepositoryId repoId = new RepositoryId(user, name);
         List<Fork> results = new LinkedList<>();
 
-        List<Fork> myForks = client.getForks(repoId).stream().map(this::repoToFork).collect(Collectors.toList());
-        results.addAll(myForks);
-        for (Fork fork : myForks) {
-            results.addAll(fork.children(maxDepth-1));
-        }
+        try {
+            List<Fork> myForks = client.getForks(repoId).stream().map(this::repoToFork).collect(Collectors.toList());
+            results.addAll(myForks);
+            for (Fork fork : myForks) {
+                results.addAll(fork.children(maxDepth - 1));
+            }
 
-        return results;
+            return results;
+        } catch (IOException e) {
+            throw new InvalidForkException(this, e);
+        }
     }
 
     private Fork repoToFork(Repository repository) {
