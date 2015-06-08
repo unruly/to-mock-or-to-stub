@@ -3,23 +3,26 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>co.unruly</groupId>
-    <artifactId>to-mock-or-to-stub</artifactId>
+    <artifactId>java-to-mock-or-to-stub</artifactId>
     <version>0.0.1-SNAPSHOT</version>
 
-    <name>to-mock-or-to-stub</name>
-
-    <description></description>
+    <name>java-to-mock-or-to-stub</name>
 
     <url>https://github.com/unruly/to_mock_or_to_stub</url>
 
     <properties>
-        <maven.compiler.source>1.7</maven.compiler.source>
-        <maven.compiler.target>1.7</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <additionalparam>-Xdoclint:none</additionalparam>
     </properties>
     
     <dependencies>
+        <dependency>
+            <groupId>org.eclipse.mylyn.github</groupId>
+            <artifactId>org.eclipse.egit.github.core</artifactId>
+            <version>2.1.5</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
