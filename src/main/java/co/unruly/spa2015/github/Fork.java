@@ -8,8 +8,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Fork {
-    private String user;
-    private final String name;
+    public final String user;
+    public final String name;
     private final Client client;
 
     public Fork(String user, String name, Client client) {
