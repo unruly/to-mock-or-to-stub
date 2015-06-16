@@ -1,4 +1,4 @@
-require 'spa2015_github/fork'
+require 'spa2015/github/fork'
 
 class Dummy
 
@@ -20,23 +20,23 @@ class Dummy
 end
 
 def add_to_repos(path, child_name)
-  Spa2015GitHub::Client.client_add(path, [{:owner => {:login => child_name}, :name => 'project'}])
+  Spa2015::GitHub::Client.client_add(path, [{:owner => {:login => child_name}, :name => 'project'}])
 end
 
-describe Spa2015GitHub::Fork do
+describe Spa2015::GitHub::Fork do
 
   before do
-    Spa2015GitHub::Client = Dummy.new
+    Spa2015::GitHub::Client = Dummy.new
   end
 
   it 'should return an empty list of forks when there are no forks' do
-    expect(Spa2015GitHub::Fork.new('owner', 'project').children(1)).to be_empty
+    expect(Spa2015::GitHub::Fork.new('owner', 'project').children(1)).to be_empty
   end
 
   it "should return a single fork when a repository has one fork" do
     add_to_repos('parent/project', 'child')
 
-    expect(Spa2015GitHub::Fork.new('parent', 'project').children(1))
+    expect(Spa2015::GitHub::Fork.new('parent', 'project').children(1))
         .to contain_exactly(have_attributes(:owner => 'child', :project_name => 'project'))
   end
 
@@ -44,7 +44,7 @@ describe Spa2015GitHub::Fork do
     add_to_repos('parent/project', 'child')
     add_to_repos('child/project', 'grand_child')
 
-    expect(Spa2015GitHub::Fork.new('parent', 'project').children(2))
+    expect(Spa2015::GitHub::Fork.new('parent', 'project').children(2))
         .to contain_exactly(
                 have_attributes(:owner => 'child', :project_name => 'project'),
                 have_attributes(:owner => 'grand_child', :project_name => 'project')
@@ -55,7 +55,7 @@ describe Spa2015GitHub::Fork do
     add_to_repos('parent/project', 'child')
     add_to_repos('child/project', 'grand_child')
 
-    expect(Spa2015GitHub::Fork.new('parent', 'project').children(1))
+    expect(Spa2015::GitHub::Fork.new('parent', 'project').children(1))
         .to contain_exactly(have_attributes(:owner => 'child', :project_name => 'project'))
   end
 

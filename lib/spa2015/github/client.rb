@@ -1,6 +1,6 @@
 require 'octokit'
 
-module Spa2015GitHub
+module Spa2015::GitHub
   module Client
 
     @octokit_client = Octokit::Client.new
