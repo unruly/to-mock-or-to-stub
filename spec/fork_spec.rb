@@ -19,8 +19,8 @@ class Dummy
   end
 end
 
-def add_to_repos(path, child_name)
-  Spa2015::GitHub::Client.client_add(path, [{:owner => {:login => child_name}, :name => 'project'}])
+def add_to_repos(path, child_name, num_children = nil)
+  Spa2015::GitHub::Client.client_add(path, [{:owner => {:login => child_name}, :name => 'project', :forks => num_children}])
 end
 
 describe Spa2015::GitHub::Fork do
@@ -56,6 +56,14 @@ describe Spa2015::GitHub::Fork do
     add_to_repos('child/project', 'grand_child')
 
     expect(Spa2015::GitHub::Fork.new('parent', 'project').children(1))
+        .to contain_exactly(have_attributes(:owner => 'child', :project_name => 'project'))
+  end
+
+  it 'should not fetch children from a child with no forks' do
+    add_to_repos('parent/project', 'child', 0)
+    add_to_repos('child/project', 'grand_child')
+
+    expect(Spa2015::GitHub::Fork.new('parent', 'project').children(2))
         .to contain_exactly(have_attributes(:owner => 'child', :project_name => 'project'))
   end
 

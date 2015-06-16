@@ -6,10 +6,11 @@ module Spa2015
 
       attr_reader :owner, :project_name, :name
 
-      def initialize(owner, project_name)
+      def initialize(owner, project_name, known_children = nil)
         @owner = owner
         @project_name = project_name
         @name = "#{@owner}/#{@project_name}"
+        @known_children = known_children
       end
 
       def children(max_depth)
@@ -32,14 +33,15 @@ module Spa2015
       private_methods :fetch_children
 
       def fetch_children
+        if @known_children == 0
+          return []
+        end
         Spa2015::GitHub::Client.get_forks(@name).map{|fork|
-          Fork.new(fork[:owner][:login], fork[:name])
+          Fork.new(fork[:owner][:login], fork[:name], fork[:forks])
         }
       end
 
     end
   end
-
-
 
 end
