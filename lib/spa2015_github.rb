@@ -1,4 +1,6 @@
-require_relative './spa2015_github/spa2015_github'
+require './spa2015_github/client'
+require './spa2015_github/fork'
 
-require_relative './spa2015_github/client'
-require_relative './spa2015_github/fork'
+module Spa2015GitHub
+
+end
