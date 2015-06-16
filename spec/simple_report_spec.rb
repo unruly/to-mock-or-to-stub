@@ -1,4 +1,4 @@
-require 'spa2015/report/csv_writer'
+require_relative '../lib/spa2015/report/csv_writer'
 
 class StubIO
 

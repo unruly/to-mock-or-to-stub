@@ -1,4 +1,4 @@
-require 'spa2015/github/fork'
+require_relative '../lib/spa2015/github/fork'
 
 class Dummy
 
