@@ -26,14 +26,14 @@ class StubFork
     self
   end
 
-  def children(max_depth)
+  def children(_max_depth)
     @my_children || []
   end
 
 end
 
 class BrokenFork
-  def children(n)
+  def children(_n)
     raise Octokit::Error
   end
 end

@@ -33,14 +33,14 @@ describe Spa2015::GitHub::Fork do
     expect(new_fork('owner', 'project').children(1)).to be_empty
   end
 
-  it "should return a single fork when a repository has one fork" do
+  it 'should return a single fork when a repository has one fork' do
     add_to_repos('parent/project', 'child')
 
     expect(new_fork('parent', 'project').children(1))
         .to contain_exactly(have_attributes(:owner => 'child', :project_name => 'project'))
   end
 
-  it "should fetch the forks of a child" do
+  it 'should fetch the forks of a child' do
     add_to_repos('parent/project', 'child')
     add_to_repos('child/project', 'grand_child')
 
