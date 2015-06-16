@@ -13,8 +13,13 @@ class StubIO
   end
 end
 
-class StubFork < Spa2015::GitHub::Fork
+class StubFork
 
+  attr_accessor :name
+
+  def initialize(name)
+    @name = name
+  end
 
   def that_returns(children)
     @my_children = children
@@ -27,18 +32,10 @@ class StubFork < Spa2015::GitHub::Fork
 
 end
 
-class BrokenFork < Spa2015::GitHub::Fork
+class BrokenFork
   def children(n)
     raise Octokit::Error
   end
-end
-
-def stub_fork(owner, project)
-  StubFork.new(owner, project)
-end
-
-def expect_written(string)
-  expect(@io.lines).to contain_exactly(string)
 end
 
 describe Spa2015::Report::CsvWriter do
@@ -49,22 +46,30 @@ describe Spa2015::Report::CsvWriter do
   end
 
   it 'should print out the parent if it has not children' do
-    @writer.generate_fork_report(stub_fork('user', 'name'),1)
+    @writer.generate_fork_report(stub_fork('user/name'),1)
     expect_written('user/name')
   end
 
 
   it 'should print out the children of the parent' do
-    stub = stub_fork('user', 'name').that_returns([stub_fork('child1','name'), stub_fork('child2', 'name')])
+    stub = stub_fork('user/name').that_returns([stub_fork('child1/name'), stub_fork('child2/name')])
     @writer.generate_fork_report(stub,2)
 
     expect_written('user/name,child1/name,child2/name')
   end
 
   it 'should die if a fork raises an error' do
-    stub = BrokenFork.new('bad','fork')
+    stub = BrokenFork.new
 
     expect{@writer.generate_fork_report(stub, 1)}.to raise_error
+  end
+
+  def stub_fork(name)
+    StubFork.new(name)
+  end
+
+  def expect_written(string)
+    expect(@io.lines).to contain_exactly(string)
   end
 
 end
