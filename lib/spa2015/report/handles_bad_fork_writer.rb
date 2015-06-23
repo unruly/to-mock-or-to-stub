@@ -19,8 +19,7 @@ module Spa2015
           children.each{|fork|
             generate_fork_report(fork, max_depth-1)
           }
-        rescue Exception => e
-          puts e.message
+        rescue Exception
           @stream.puts("*** INVALID: #{parent.name}")
         end
       end

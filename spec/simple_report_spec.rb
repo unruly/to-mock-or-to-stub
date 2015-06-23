@@ -21,6 +21,13 @@ describe Spa2015::Report::CsvWriter do
     expect_written('user/name,child1/name,child2/name')
   end
 
+  it 'should pass through max depth to children to get all their children' do
+    stub = stub_fork('user/name')
+    @writer.generate_fork_report(stub,2)
+
+    expect(stub.max_depth).to be(2)
+  end
+
   it 'should die if a fork raises an error' do
     stub = Spa2015::Stubs::BrokenFork.new
 

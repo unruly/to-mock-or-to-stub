@@ -14,7 +14,7 @@ module Spa2015::Stubs
 
   class StubFork
 
-    attr_accessor :name
+    attr_accessor :name, :max_depth
 
     def initialize(name)
       @name = name
@@ -25,7 +25,8 @@ module Spa2015::Stubs
       self
     end
 
-    def children(_max_depth)
+    def children(max_depth)
+      @max_depth = max_depth
       @my_children || []
     end
 
