@@ -1,47 +1,10 @@
 require_relative '../lib/spa2015/report/csv_writer'
-
-class StubIO
-
-  attr_reader :lines
-
-  def initialize
-    @lines = []
-  end
-
-  def puts(str)
-    @lines << str
-  end
-end
-
-class StubFork
-
-  attr_accessor :name
-
-  def initialize(name)
-    @name = name
-  end
-
-  def that_returns(children)
-    @my_children = children
-    self
-  end
-
-  def children(_max_depth)
-    @my_children || []
-  end
-
-end
-
-class BrokenFork
-  def children(_n)
-    raise Octokit::Error
-  end
-end
+require_relative './stubs'
 
 describe Spa2015::Report::CsvWriter do
 
   before do
-    @io = StubIO.new
+    @io = Spa2015::Stubs::StubIO.new
     @writer = Spa2015::Report::CsvWriter.new(@io)
   end
 
@@ -59,13 +22,13 @@ describe Spa2015::Report::CsvWriter do
   end
 
   it 'should die if a fork raises an error' do
-    stub = BrokenFork.new
+    stub = Spa2015::Stubs::BrokenFork.new
 
     expect{@writer.generate_fork_report(stub, 1)}.to raise_error
   end
 
   def stub_fork(name)
-    StubFork.new(name)
+    Spa2015::Stubs::StubFork.new(name)
   end
 
   def expect_written(string)

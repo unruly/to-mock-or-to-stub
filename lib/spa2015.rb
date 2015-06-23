@@ -8,3 +8,4 @@ end
 require_relative './spa2015/github/client'
 require_relative './spa2015/github/fork'
 require_relative './spa2015/report/csv_writer'
+require_relative './spa2015/report/handles_bad_fork_writer'
