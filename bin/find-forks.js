@@ -5,8 +5,6 @@ var Fork = require('../lib/github/fork'),
 
 var user = process.argv[2];
 var repo = process.argv[3];
+var maxDepth = process.argv[3] == undefined ? 2 : process.argv[3];
 
-new HandlesBadForkWriter(console).generateForkReport(new Fork(user, repo), 2);
-
-
-
+new HandlesBadForkWriter(console).generateForkReport(new Fork(user, repo), maxDepth);
