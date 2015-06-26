@@ -20,6 +20,7 @@ describe("Fork", function() {
 
   it("should return an empty list of forks when there are no children", function(done) {
     var noChildRepo = new Fork('foo', 'bar');
+    noChildRepo.client = returnNoChildren();
 
     noChildRepo.children(1, function(children, err) {
       expect(children.length).to.be.equal(0);
