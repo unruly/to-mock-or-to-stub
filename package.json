@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "test": "./node_modules/.bin/mocha --recursive -R nyan spec/"
+    "test": "./node_modules/.bin/mocha --recursive spec/"
   },
   "devDependencies": {
+    "async": "^1.2.1",
     "chai": "^2.3.0",
     "mocha": "^2.2.5"
   }
