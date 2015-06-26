@@ -3,18 +3,18 @@ var Fork = require('../../lib/github/fork');
 describe("Fork", function() {
 
   function returnNoChildren() {
+    var stub = sinon.stub();
+    stub.callsArgWith(2, [], null);
     return {
-      getForks: function (user, repo, callback) {
-        callback([], null);
-      }
+      getForks: stub
     };
   }
 
   function returnWithChild(fork) {
+    var stub = sinon.stub();
+    stub.callsArgWith(2, [fork], null);
     return {
-      getForks: function (user, repo, callback) {
-        callback([fork], null);
-      }
+      getForks: stub
     };
   }
 
@@ -80,16 +80,13 @@ describe("Fork", function() {
     var badRepoError = new Error("Problem with fork");
 
     badRepo.client = {
-      getForks: function(user, repo, callback) {
-        callback(null, badRepoError);
-      }
+      getForks: sinon.stub().callsArgWith(2, null, badRepoError)
     };
 
     badRepo.children(1, function(forks, err) {
       expect(err).to.be.equal(badRepoError);
       done();
     });
-
   });
 
 });

@@ -3,56 +3,47 @@ var Fork = require('../../lib/github/fork');
 
 describe("HandlesBadForkWriter", function () {
 
-    function newStubWriter() {
-        return {
-            data: [],
-            log: function (input) {
-                this.data = this.data.concat(input);
-            }
-        };
-    }
+    before(function() {
+        sinon.spy(console, "log");
+    });
+
+    beforeEach(function() {
+        console.log.reset();
+    });
 
     it('should print a repo with no forks', function () {
         var singleRepoFork = new Fork("foo", "bar");
-        singleRepoFork.children = function (maxDepth, callback) {
-            callback([], null);
-        };
+        singleRepoFork.children = sinon.stub().callsArgWith(1, [], null);
 
-        var stubWriter = newStubWriter();
-        var handlesBadForkWriter = new HandlesBadForkWriter(stubWriter);
+        var handlesBadForkWriter = new HandlesBadForkWriter(console);
 
         handlesBadForkWriter.generateForkReport(singleRepoFork, 1);
 
-        expect(stubWriter.data).to.include.members(['foo/bar']);
-
+        expect(console.log).to.be.calledWith('foo/bar');
     });
 
     it('should print out forks', function () {
         var singleRepoFork = new Fork("foo", "bar");
-        singleRepoFork.children = function (maxDepth, callback) {
-            callback([new Fork("baz", "bar")], null);
-        };
+        singleRepoFork.children = sinon.stub().callsArgWith(1, [new Fork("baz", "bar")], null);
 
-        var stubWriter = newStubWriter();
-        var handlesBadForkWriter = new HandlesBadForkWriter(stubWriter);
+        var handlesBadForkWriter = new HandlesBadForkWriter(console);
 
         handlesBadForkWriter.generateForkReport(singleRepoFork, 1);
 
-        expect(stubWriter.data).to.include.members(['foo/bar','baz/bar']);
+        expect(console.log).to.be.calledWith('foo/bar');
+        expect(console.log).to.be.calledWith('baz/bar');
     });
 
     it('should print out errors if it finds them', function () {
         var errorFork = new Fork("foo", "bar");
-        errorFork.children = function (maxDepth, callback) {
-            callback(null, new Error("Bad fork"));
-        };
+        errorFork.children = sinon.stub().callsArgWith(1, null, new Error("Bad fork"));
 
-        var stubWriter = newStubWriter();
-        var handlesBadForkWriter = new HandlesBadForkWriter(stubWriter);
+        var handlesBadForkWriter = new HandlesBadForkWriter(console);
 
         handlesBadForkWriter.generateForkReport(errorFork, 1);
 
-        expect(stubWriter.data).to.include.members(['foo/bar','*** Error getting fork data']);
+        expect(console.log).to.be.calledWith("foo/bar");
+        expect(console.log).to.be.calledWith("*** Error getting fork data");
     });
 
 });
