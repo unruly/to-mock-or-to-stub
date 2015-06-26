@@ -1,4 +1,4 @@
-var Fork = require('../lib/fork');
+var Fork = require('../../lib/github/fork');
 
 describe("Fork", function() {
 
