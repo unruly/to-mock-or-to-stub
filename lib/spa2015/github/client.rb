@@ -10,5 +10,9 @@ module Spa2015::GitHub
     def get_forks(name)
       @octokit_client.forks(name)
     end
+
+    def get_parent(name)
+      @octokit_client.parent(name)
+    end
   end
 end
