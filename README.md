@@ -25,3 +25,11 @@ You will have a chance to write some code in pairs and try to practice a constra
 
  * `js-mocha-chai-stub` - javascript using stubs
  * `js-mocha-chai-sinon` - javascript using sinon as a mocking framework
+
+## Exercises
+
+ * Using the examples of the report writers already implemented, create a writer that prints out the forks as a tree (you may use simple indentation to achieve this effect)
+ * Create a feature that allows you to supply any arbitrary repo in the tree, that will print out the entire tree, starting from the parent
+ * Ensure that the starting fork is highlighted in the tree that is rendered in the previous feature
+ * Render the tree using ascii art
+
